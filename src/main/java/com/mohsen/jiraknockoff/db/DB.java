@@ -6,11 +6,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class UserManager implements Iterable<User> {
+public class DB implements Iterable<User> {
+    private static DB instance;
     private List<User> users;
 
-    public UserManager() {
+    private DB() {
         this.users = new ArrayList<>();
+    }
+
+    public static DB getInstance() {
+        if (instance == null) {
+            instance = new DB();
+        }
+        return instance;
     }
 
     public void addUser(User user) {
