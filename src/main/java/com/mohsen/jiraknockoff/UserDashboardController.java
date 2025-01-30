@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 
@@ -23,10 +24,10 @@ public class UserDashboardController {
     private TableColumn<Task, String> taskTitleColumn;
 
     @FXML
-    private TableColumn<Task, Task.priority> taskPriorityColumn;
+    private TableColumn<Task, Task.Priority> taskPriorityColumn;
 
     @FXML
-    private TableColumn<Task, Task.taskStatus> taskStatusColumn;
+    private TableColumn<Task, Task.Status> taskStatusColumn;
 
     private CurrentUser currentUser = CurrentUser.getInstance();
 
@@ -42,8 +43,16 @@ public class UserDashboardController {
         taskPriorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
         taskStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
+        taskStatusColumn.setCellFactory(ComboBoxTableCell.forTableColumn(Task.Status.values()));
+        taskStatusColumn.setOnEditCommit(event -> {
+            Task task = event.getRowValue();
+            task.setStatus(event.getNewValue());
+            // Optionally, save the updated task to the database here
+        });
+
         ObservableList<Task> tasks = FXCollections.observableArrayList(currentUser.getUser().getTasks());
         taskTableView.setItems(tasks);
+        taskTableView.setEditable(true);
     }
 
     private void handleProjectClick(MouseEvent event) {

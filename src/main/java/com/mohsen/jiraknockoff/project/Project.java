@@ -11,9 +11,9 @@ public class Project {
     private List<User> teamMembers;
     private List<Task> tasks;
 
-    public Project(String name, String description, User manager) {
+    public Project(String name, User manager) {
         this.name = name;
-        this.description = description;
+        this.description = "";
         this.manager = manager;
         this.teamMembers = new ArrayList<>();
         this.tasks = new ArrayList<>();
@@ -63,7 +63,7 @@ public class Project {
         this.tasks.add(task);
     }
 
-    public Task createTask(String title, Task.priority priority, Task.taskStatus status, User assignedTo) {
+    public Task createTask(String title, Task.Priority priority, Task.Status status, User assignedTo) {
         Task newTask = new Task(title, priority, status, assignedTo);
         this.tasks.add(newTask);
         return newTask;

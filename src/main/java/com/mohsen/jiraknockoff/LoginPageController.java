@@ -45,8 +45,8 @@ public class LoginPageController {
         }
 
         //////
-        user.addTeamMemberProject(new Project("Project 1", "dsk", user));
-        user.addTask(new Task("Task 1", Task.priority.LOW, Task.taskStatus.TODO, user));
+        user.addTeamMemberProject(new Project("Project 1", user));
+        user.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
         //////
 
         CurrentUser currentUser = CurrentUser.getInstance();

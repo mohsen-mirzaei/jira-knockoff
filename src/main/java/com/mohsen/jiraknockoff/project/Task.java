@@ -3,20 +3,20 @@ package com.mohsen.jiraknockoff.project;
 import com.mohsen.jiraknockoff.user.User;
 
 public class Task {
-    public enum priority {
+    public enum Priority {
         LOW, MEDIUM, HIGH
     }
 
-    public enum taskStatus {
+    public enum Status {
         TODO, IN_PROGRESS, DONE
     }
 
     private String title;
-    private priority priority;
-    private taskStatus status;
+    private Priority priority;
+    private Status status;
     private User assignedTo;
 
-    public Task(String title, priority priority, taskStatus status, User assignedTo) {
+    public Task(String title, Priority priority, Status status, User assignedTo) {
         this.title = title;
         this.priority = priority;
         this.status = status;
@@ -31,19 +31,19 @@ public class Task {
         this.title = title;
     }
 
-    public priority getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    public void setPriority(priority priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
-    public taskStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(taskStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
