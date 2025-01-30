@@ -1,4 +1,6 @@
-package com.mohsen.jiraknockoff;
+package com.mohsen.jiraknockoff.project;
+
+import com.mohsen.jiraknockoff.user.User;
 
 public class Task {
     enum priority {
@@ -12,11 +14,13 @@ public class Task {
     private String title;
     private priority priority;
     private taskStatus status;
+    private User assignedTo;
 
-    public Task(String title, priority priority, taskStatus status) {
+    public Task(String title, priority priority, taskStatus status, User assignedTo) {
         this.title = title;
         this.priority = priority;
         this.status = status;
+        this.assignedTo = assignedTo;
     }
 
     public String getTitle() {
@@ -41,5 +45,13 @@ public class Task {
 
     public void setStatus(taskStatus status) {
         this.status = status;
+    }
+
+    public User getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(User assignedTo) {
+        this.assignedTo = assignedTo;
     }
 }
