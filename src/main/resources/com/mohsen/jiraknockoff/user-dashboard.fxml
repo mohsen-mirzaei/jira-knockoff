@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mohsen.jiraknockoff.UserDashboardController"
+            prefHeight="600.0" prefWidth="1000.0">
+    <children>
+        <ListView fx:id="projectListView" layoutX="50.0" layoutY="50.0" prefHeight="300.0" prefWidth="500.0"/>
+        <TableView fx:id="taskTableView" layoutX="50.0" layoutY="400.0" prefHeight="150.0" prefWidth="500.0">
+            <columns>
+                <TableColumn fx:id="taskTitleColumn" text="Task Title" prefWidth="166.0"/>
+                <TableColumn fx:id="taskPriorityColumn" text="Task Priority" prefWidth="166.0"/>
+                <TableColumn fx:id="taskStatusColumn" text="Task Status" prefWidth="166.0"/>
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

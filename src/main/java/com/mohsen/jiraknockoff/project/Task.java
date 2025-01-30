@@ -3,11 +3,11 @@ package com.mohsen.jiraknockoff.project;
 import com.mohsen.jiraknockoff.user.User;
 
 public class Task {
-    enum priority {
+    public enum priority {
         LOW, MEDIUM, HIGH
     }
 
-    enum taskStatus {
+    public enum taskStatus {
         TODO, IN_PROGRESS, DONE
     }
 
