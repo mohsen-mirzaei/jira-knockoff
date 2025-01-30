@@ -6,4 +6,8 @@ module com.mohsen.jiraknockoff {
 
     opens com.mohsen.jiraknockoff to javafx.fxml;
     exports com.mohsen.jiraknockoff;
+    exports com.mohsen.jiraknockoff.user;
+    exports com.mohsen.jiraknockoff.project;
+    opens com.mohsen.jiraknockoff.project to javafx.fxml;
+    exports com.mohsen.jiraknockoff.db;
 }
