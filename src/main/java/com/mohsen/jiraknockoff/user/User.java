@@ -79,11 +79,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", teamMemberProjects=" + teamMemberProjects +
-                ", managerProjects=" + managerProjects +
-                ", tasks=" + tasks +
-                '}';
+        return username;
     }
 }

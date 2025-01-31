@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mohsen.jiraknockoff.ProjectPageController">
+    <children>
+        <TableView fx:id="taskTableView" layoutX="50.0" layoutY="50.0" prefHeight="400.0" prefWidth="900.0">
+            <columns>
+                <TableColumn fx:id="taskNameColumn" prefWidth="225.0" text="Task Name" />
+                <TableColumn fx:id="taskPriorityColumn" prefWidth="225.0" text="Task Priority" />
+                <TableColumn fx:id="taskStatusColumn" prefWidth="225.0" text="Task Status" />
+                <TableColumn fx:id="taskAssignedToColumn" prefWidth="225.0" text="Assigned To" />
+            </columns>
+        </TableView>
+        <TextField fx:id="taskTitleField" layoutX="50.0" layoutY="470.0" promptText="Task Title" />
+        <ComboBox fx:id="taskPriorityComboBox" layoutX="250.0" layoutY="470.0" promptText="Task Priority" />
+        <ComboBox fx:id="taskStatusComboBox" layoutX="450.0" layoutY="470.0" promptText="Task Status" />
+        <ComboBox fx:id="taskAssignedToComboBox" layoutX="650.0" layoutY="470.0" promptText="Assigned To" />
+        <Button layoutX="850.0" layoutY="470.0" onAction="#handleCreateTask" text="Create Task" />
+      <Button layoutX="474.0" layoutY="537.0" mnemonicParsing="false" onAction="#handleReturnToDashboard" text="reutrn" />
+    </children>
+</AnchorPane>

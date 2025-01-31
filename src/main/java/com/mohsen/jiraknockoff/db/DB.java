@@ -1,5 +1,6 @@
 package com.mohsen.jiraknockoff.db;
 
+import com.mohsen.jiraknockoff.project.Project;
 import com.mohsen.jiraknockoff.user.User;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public class DB implements Iterable<User> {
 
     private DB() {
         this.users = new ArrayList<>();
+        this.addUser(new User("mohsen", "mohsen123"));
+        this.findUserByUsername("mohsen").addManagerProject(new Project("kill self 2025", this.findUserByUsername("mohsen")));
     }
 
     public static DB getInstance() {
@@ -38,4 +41,9 @@ public class DB implements Iterable<User> {
     public Iterator<User> iterator() {
         return users.iterator();
     }
+
+    public List<User> getAllUsers() {
+        return users;
+    }
 }
+

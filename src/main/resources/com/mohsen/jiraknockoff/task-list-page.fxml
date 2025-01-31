@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mohsen.jiraknockoff.TaskListPageController"
+            prefHeight="600.0" prefWidth="1000.0">
+    <children>
+        <TableView fx:id="taskTableView" layoutX="50.0" layoutY="50.0" prefHeight="500.0" prefWidth="900.0">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Task Title" prefWidth="300.0"/>
+                <TableColumn fx:id="priorityColumn" text="Priority" prefWidth="300.0"/>
+                <TableColumn fx:id="statusColumn" text="Status" prefWidth="300.0"/>
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

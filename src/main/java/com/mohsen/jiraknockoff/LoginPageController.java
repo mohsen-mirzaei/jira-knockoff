@@ -45,7 +45,9 @@ public class LoginPageController {
         }
 
         //////
-        user.addTeamMemberProject(new Project("Project 1", user));
+        Project prj = new Project("Project 1", user);
+        prj.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
+        user.addTeamMemberProject(prj);
         user.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
         //////
 

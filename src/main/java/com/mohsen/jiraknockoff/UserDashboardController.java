@@ -6,60 +6,106 @@ import com.mohsen.jiraknockoff.user.CurrentUser;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class UserDashboardController {
     @FXML
     private ListView<Project> projectListView;
 
     @FXML
-    private TableView<Task> taskTableView;
+    private ListView<Project> teamProjectsListView;
 
     @FXML
-    private TableColumn<Task, String> taskTitleColumn;
-
-    @FXML
-    private TableColumn<Task, Task.Priority> taskPriorityColumn;
-
-    @FXML
-    private TableColumn<Task, Task.Status> taskStatusColumn;
+    private TextField projectNameField;
 
     private CurrentUser currentUser = CurrentUser.getInstance();
 
     public void initialize() {
         // Initialize project list view
-        ObservableList<Project> projects = FXCollections.observableArrayList(currentUser.getUser().getTeamMemberProjects());
-        projectListView.setItems(projects);
+        ObservableList<Project> managerProjects = FXCollections.observableArrayList(currentUser.getUser().getManagerProjects());
+        projectListView.setItems(managerProjects);
 
         projectListView.setOnMouseClicked(this::handleProjectClick);
 
-        // Initialize task table view
-        taskTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        taskPriorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
-        taskStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        // Initialize team projects list view
+        ObservableList<Project> teamProjects = FXCollections.observableArrayList(currentUser.getUser().getTeamMemberProjects());
+        teamProjectsListView.setItems(teamProjects);
 
-        taskStatusColumn.setCellFactory(ComboBoxTableCell.forTableColumn(Task.Status.values()));
-        taskStatusColumn.setOnEditCommit(event -> {
-            Task task = event.getRowValue();
-            task.setStatus(event.getNewValue());
-            // Optionally, save the updated task to the database here
-        });
+        teamProjectsListView.setOnMouseClicked(this::handleTeamProjectClick);
+    }
 
-        ObservableList<Task> tasks = FXCollections.observableArrayList(currentUser.getUser().getTasks());
-        taskTableView.setItems(tasks);
-        taskTableView.setEditable(true);
+    @FXML
+    private void handleCreateProject() {
+        String projectName = projectNameField.getText();
+        if (!projectName.isEmpty()) {
+            Project newProject = new Project(projectName, currentUser.getUser());
+            currentUser.getUser().addManagerProject(newProject);
+            projectListView.getItems().add(newProject);
+            projectNameField.clear();
+        }
     }
 
     private void handleProjectClick(MouseEvent event) {
         Project selectedProject = projectListView.getSelectionModel().getSelectedItem();
         if (selectedProject != null) {
-            // Handle the project click event (e.g., open project details)
-            System.out.println("Selected project: " + selectedProject.getName());
+            try {
+                FXMLLoader loader;
+                Parent root;
+                if (selectedProject.getManager().equals(currentUser.getUser())) {
+                    loader = new FXMLLoader(getClass().getResource("project-page.fxml"));
+                    root = loader.load();
+                    ProjectPageController controller = loader.getController();
+                    controller.setProject(selectedProject);
+                } else {
+                    loader = new FXMLLoader(getClass().getResource("task-list-page.fxml"));
+                    root = loader.load();
+                    TaskListPageController controller = loader.getController();
+                    ObservableList<Task> userTasks = FXCollections.observableArrayList(
+                            selectedProject.getTasks().stream()
+                                    .filter(task -> task.getAssignedTo().equals(currentUser.getUser()))
+                                    .toList()
+                    );
+                    controller.setTasks(userTasks);
+                }
+
+                Stage stage = (Stage) projectListView.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @FXML
+    private void handleTeamProjectClick(MouseEvent event) {
+        Project selectedProject = teamProjectsListView.getSelectionModel().getSelectedItem();
+        if (selectedProject != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("task-list-page.fxml"));
+                Parent root = loader.load();
+                TaskListPageController controller = loader.getController();
+                ObservableList<Task> userTasks = FXCollections.observableArrayList(
+                        selectedProject.getTasks().stream()
+                                .filter(task -> task.getAssignedTo().equals(currentUser.getUser()))
+                                .toList()
+                );
+                controller.setTasks(userTasks);
+
+                Stage stage = (Stage) teamProjectsListView.getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

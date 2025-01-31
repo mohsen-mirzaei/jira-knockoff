@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.mohsen.jiraknockoff.UserDashboardController"
-            prefHeight="600.0" prefWidth="1000.0">
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mohsen.jiraknockoff.UserDashboardController">
     <children>
-        <ListView fx:id="projectListView" layoutX="50.0" layoutY="50.0" prefHeight="300.0" prefWidth="500.0"/>
-        <TableView fx:id="taskTableView" layoutX="50.0" layoutY="400.0" prefHeight="150.0" prefWidth="500.0">
-            <columns>
-                <TableColumn fx:id="taskTitleColumn" text="Task Title" prefWidth="166.0"/>
-                <TableColumn fx:id="taskPriorityColumn" text="Task Priority" prefWidth="166.0"/>
-                <TableColumn fx:id="taskStatusColumn" text="Task Status" prefWidth="166.0"/>
-            </columns>
-        </TableView>
+        <ListView fx:id="projectListView" layoutX="50.0" layoutY="237.0" prefHeight="189.0" prefWidth="131.0" />
+        <ListView fx:id="teamProjectsListView" layoutX="50.0" layoutY="453.0" prefHeight="89.0" prefWidth="131.0" />
+        <TextField fx:id="projectNameField" layoutX="50.0" layoutY="178.0" prefHeight="25.0" prefWidth="107.0" promptText="Project name" />
+        <Button layoutX="157.0" layoutY="178.0" onAction="#handleCreateProject" prefHeight="17.0" prefWidth="20.0" text="+">
+         <font>
+            <Font size="11.0" />
+         </font></Button>
+      <Label layoutX="50.0" layoutY="213.0" text="My Projects" />
+      <Label layoutX="50.0" layoutY="431.0" text="Other Projects" />
     </children>
 </AnchorPane>
