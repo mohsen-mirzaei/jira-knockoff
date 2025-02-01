@@ -51,6 +51,10 @@ public class Project {
         this.teamMembers = teamMembers;
     }
 
+    public void addTeamMember(User user) {
+        this.teamMembers.add(user);
+    }
+
     public List<Task> getTasks() {
         return tasks;
     }

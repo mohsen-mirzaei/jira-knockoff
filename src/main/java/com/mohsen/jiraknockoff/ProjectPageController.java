@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
@@ -49,11 +46,37 @@ public class ProjectPageController {
     @FXML
     private ComboBox<User> taskAssignedToComboBox;
 
+    @FXML
+    private ListView<User> projectUsersListView;
+
+    @FXML
+    private ComboBox<User> usersComboBox;
+
     private Project project;
 
     public void setProject(Project project) {
         this.project = project;
         initialize();
+    }
+
+    private void loadProjectUsers() {
+        ObservableList<User> projectUsers = FXCollections.observableArrayList(DB.getInstance().getAllUsers());
+        projectUsersListView.setItems(projectUsers);
+    }
+
+    private void loadAllUsers() {
+        // Assuming you have a method to get all users
+        ObservableList<User> allUsers = FXCollections.observableArrayList(DB.getInstance().getAllUsers());
+        usersComboBox.setItems(allUsers);
+    }
+
+    @FXML
+    private void handleAddUser() {
+        User selectedUser = usersComboBox.getValue();
+        if (selectedUser != null && !project.getTeamMembers().contains(selectedUser)) {
+            project.addTeamMember(selectedUser);
+            projectUsersListView.getItems().add(selectedUser);
+        }
     }
 
     public void initialize() {

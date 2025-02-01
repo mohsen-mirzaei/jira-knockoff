@@ -33,10 +33,12 @@ public class LoginPageController {
         String password = passwordField.getText();
 
         User user = database.findUserByUsername(username);
+        boolean authenticated = true;
         if (user != null) {
             if (user.getPassword().equals(password)) {
                 welcomeText.setText("Welcome, " + username + "!");
             } else {
+                authenticated = false;
                 welcomeText.setText("Incorrect password!");
             }
         } else {
@@ -44,16 +46,20 @@ public class LoginPageController {
             welcomeText.setText("Account created!");
         }
 
-        //////
-        Project prj = new Project("Project 1", user);
-        prj.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
-        user.addTeamMemberProject(prj);
-        user.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
-        //////
 
-        CurrentUser currentUser = CurrentUser.getInstance();
-        currentUser.setUser(user);
-        loadUserDashboard();
+        if (authenticated) {
+
+            //////
+            Project prj = new Project("Project 1", user);
+            prj.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
+            user.addTeamMemberProject(prj);
+            user.addTask(new Task("Task 1", Task.Priority.LOW, Task.Status.TODO, user));
+            //////
+
+            CurrentUser currentUser = CurrentUser.getInstance();
+            currentUser.setUser(user);
+            loadUserDashboard();
+        }
     }
 
     private void loadUserDashboard() {
