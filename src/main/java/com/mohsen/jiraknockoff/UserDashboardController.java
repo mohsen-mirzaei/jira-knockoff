@@ -9,14 +9,51 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 
 public class UserDashboardController {
+
+    @FXML
+    private TableView<Task> todoTableView;
+
+    @FXML
+    private TableColumn<Task, String> todoTitleColumn;
+
+    @FXML
+    private TableColumn<Task, Task.Priority> todoPriorityColumn;
+
+    @FXML
+    private TableColumn<Task, Task.Status> todoStatusColumn;
+
+    @FXML
+    private TableView<Task> inProgressTableView;
+
+    @FXML
+    private TableColumn<Task, String> inProgressTitleColumn;
+
+    @FXML
+    private TableColumn<Task, Task.Priority> inProgressPriorityColumn;
+
+    @FXML
+    private TableColumn<Task, Task.Status> inProgressStatusColumn;
+
+    @FXML
+    private TableView<Task> doneTableView;
+
+    @FXML
+    private TableColumn<Task, String> doneTitleColumn;
+
+    @FXML
+    private TableColumn<Task, Task.Priority> donePriorityColumn;
+
+    @FXML
+    private TableColumn<Task, Task.Status> doneStatusColumn;
+
     @FXML
     private ListView<Project> projectListView;
 
@@ -29,17 +66,119 @@ public class UserDashboardController {
     private CurrentUser currentUser = CurrentUser.getInstance();
 
     public void initialize() {
+        // Initialize columns
+        initializeColumns(todoTitleColumn, todoPriorityColumn, todoStatusColumn);
+        initializeColumns(inProgressTitleColumn, inProgressPriorityColumn, inProgressStatusColumn);
+        initializeColumns(doneTitleColumn, donePriorityColumn, doneStatusColumn);
+
+        // Initialize task lists
+        ObservableList<Task> todoTasks = FXCollections.observableArrayList(
+                currentUser.getUser().getTasks().stream()
+                        .filter(task -> task.getStatus() == Task.Status.TODO)
+                        .toList()
+        );
+        ObservableList<Task> inProgressTasks = FXCollections.observableArrayList(
+                currentUser.getUser().getTasks().stream()
+                        .filter(task -> task.getStatus() == Task.Status.IN_PROGRESS)
+                        .toList()
+        );
+        ObservableList<Task> doneTasks = FXCollections.observableArrayList(
+                currentUser.getUser().getTasks().stream()
+                        .filter(task -> task.getStatus() == Task.Status.DONE)
+                        .toList()
+        );
+
+        todoTableView.setItems(todoTasks);
+        inProgressTableView.setItems(inProgressTasks);
+        doneTableView.setItems(doneTasks);
+
         // Initialize project list view
         ObservableList<Project> managerProjects = FXCollections.observableArrayList(currentUser.getUser().getManagerProjects());
         projectListView.setItems(managerProjects);
-
-        projectListView.setOnMouseClicked(this::handleProjectClick);
 
         // Initialize team projects list view
         ObservableList<Project> teamProjects = FXCollections.observableArrayList(currentUser.getUser().getTeamMemberProjects());
         teamProjectsListView.setItems(teamProjects);
 
-        teamProjectsListView.setOnMouseClicked(this::handleTeamProjectClick);
+        projectListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Project selectedProject = projectListView.getSelectionModel().getSelectedItem();
+                if (selectedProject != null) {
+                    loadProjectPage(selectedProject);
+                }
+            }
+        });
+    }
+
+    private void loadProjectPage(Project project) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("project-page.fxml"));
+            Parent root = loader.load();
+
+            ProjectPageController controller = loader.getController();
+            controller.setProject(project);
+
+            Stage stage = (Stage) projectListView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeColumns(TableColumn<Task, String> titleColumn, TableColumn<Task, Task.Priority> priorityColumn, TableColumn<Task, Task.Status> statusColumn) {
+        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        priorityColumn.setCellValueFactory(new PropertyValueFactory<>("priority"));
+        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+
+        statusColumn.setCellFactory(new Callback<>() {
+            @Override
+            public TableCell<Task, Task.Status> call(TableColumn<Task, Task.Status> param) {
+                return new TableCell<>() {
+                    private final ComboBox<Task.Status> comboBox = new ComboBox<>();
+
+                    {
+                        comboBox.getItems().setAll(Task.Status.values());
+                        comboBox.setOnAction(event -> {
+                            Task task = getTableView().getItems().get(getIndex());
+                            Task.Status newStatus = comboBox.getValue();
+                            if (task.getStatus() != newStatus) {
+                                moveTask(task, newStatus);
+                            }
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Task.Status item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            comboBox.setValue(item);
+                            setGraphic(comboBox);
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    private void moveTask(Task task, Task.Status newStatus) {
+        ObservableList<Task> sourceList = switch (task.getStatus()) {
+            case TODO -> todoTableView.getItems();
+            case IN_PROGRESS -> inProgressTableView.getItems();
+            case DONE -> doneTableView.getItems();
+        };
+
+        ObservableList<Task> targetList = switch (newStatus) {
+            case TODO -> todoTableView.getItems();
+            case IN_PROGRESS -> inProgressTableView.getItems();
+            case DONE -> doneTableView.getItems();
+        };
+
+        sourceList.remove(task);
+        task.setStatus(newStatus);
+        targetList.add(task);
     }
 
     @FXML
@@ -53,59 +192,23 @@ public class UserDashboardController {
         }
     }
 
-    private void handleProjectClick(MouseEvent event) {
-        Project selectedProject = projectListView.getSelectionModel().getSelectedItem();
-        if (selectedProject != null) {
-            try {
-                FXMLLoader loader;
-                Parent root;
-                if (selectedProject.getManager().equals(currentUser.getUser())) {
-                    loader = new FXMLLoader(getClass().getResource("project-page.fxml"));
-                    root = loader.load();
-                    ProjectPageController controller = loader.getController();
-                    controller.setProject(selectedProject);
-                } else {
-                    loader = new FXMLLoader(getClass().getResource("task-list-page.fxml"));
-                    root = loader.load();
-                    TaskListPageController controller = loader.getController();
-                    ObservableList<Task> userTasks = FXCollections.observableArrayList(
-                            selectedProject.getTasks().stream()
-                                    .filter(task -> task.getAssignedTo().equals(currentUser.getUser()))
-                                    .toList()
-                    );
-                    controller.setTasks(userTasks);
-                }
-
-                Stage stage = (Stage) projectListView.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     @FXML
-    private void handleTeamProjectClick(MouseEvent event) {
-        Project selectedProject = teamProjectsListView.getSelectionModel().getSelectedItem();
-        if (selectedProject != null) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("task-list-page.fxml"));
-                Parent root = loader.load();
-                TaskListPageController controller = loader.getController();
-                ObservableList<Task> userTasks = FXCollections.observableArrayList(
-                        selectedProject.getTasks().stream()
-                                .filter(task -> task.getAssignedTo().equals(currentUser.getUser()))
-                                .toList()
-                );
-                controller.setTasks(userTasks);
+    private void handleLogout() {
+        // Set the current user to null
+        currentUser.setUser(null);
 
-                Stage stage = (Stage) teamProjectsListView.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        // Load the login page
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("login-page.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) projectListView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+
 }

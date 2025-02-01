@@ -3,20 +3,51 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mohsen.jiraknockoff.UserDashboardController">
     <children>
-        <ListView fx:id="projectListView" layoutX="50.0" layoutY="237.0" prefHeight="189.0" prefWidth="131.0" />
-        <ListView fx:id="teamProjectsListView" layoutX="50.0" layoutY="453.0" prefHeight="89.0" prefWidth="131.0" />
-        <TextField fx:id="projectNameField" layoutX="50.0" layoutY="178.0" prefHeight="25.0" prefWidth="107.0" promptText="Project name" />
-        <Button layoutX="157.0" layoutY="178.0" onAction="#handleCreateProject" prefHeight="17.0" prefWidth="20.0" text="+">
+        <ListView fx:id="projectListView" layoutX="27.0" layoutY="216.0" prefHeight="189.0" prefWidth="131.0" />
+        <ListView fx:id="teamProjectsListView" layoutX="27.0" layoutY="432.0" prefHeight="89.0" prefWidth="131.0" />
+        <TextField fx:id="projectNameField" layoutX="27.0" layoutY="157.0" prefHeight="25.0" prefWidth="107.0" promptText="Project name" />
+        <Button layoutX="134.0" layoutY="157.0" onAction="#handleCreateProject" prefHeight="17.0" prefWidth="20.0" text="+">
+            <font>
+                <Font size="11.0" />
+            </font>
+        </Button>
+        <Label layoutX="27.0" layoutY="192.0" text="My Projects" />
+        <Label layoutX="27.0" layoutY="410.0" text="Other Projects" />
+
+        <TableView fx:id="todoTableView" layoutX="178.0" layoutY="156.0" prefHeight="365.0" prefWidth="250.0">
+            <columns>
+                <TableColumn fx:id="todoTitleColumn" prefWidth="100.0" text="Task Title" />
+                <TableColumn fx:id="todoPriorityColumn" prefWidth="75.0" text="Priority" />
+                <TableColumn fx:id="todoStatusColumn" prefWidth="75.0" text="Status" />
+            </columns>
+        </TableView>
+        <TableView fx:id="inProgressTableView" layoutX="441.0" layoutY="156.0" prefHeight="365.0" prefWidth="250.0">
+            <columns>
+                <TableColumn fx:id="inProgressTitleColumn" prefWidth="100.0" text="Task Title" />
+                <TableColumn fx:id="inProgressPriorityColumn" prefWidth="75.0" text="Priority" />
+                <TableColumn fx:id="inProgressStatusColumn" prefWidth="75.0" text="Status" />
+            </columns>
+        </TableView>
+        <TableView fx:id="doneTableView" layoutX="713.0" layoutY="158.0" prefHeight="362.0" prefWidth="250.0">
+            <columns>
+                <TableColumn fx:id="doneTitleColumn" prefWidth="100.0" text="Task Title" />
+                <TableColumn fx:id="donePriorityColumn" prefWidth="75.0" text="Priority" />
+                <TableColumn fx:id="doneStatusColumn" prefWidth="75.0" text="Status" />
+            </columns>
+        </TableView>
+        <Button layoutX="892.0" layoutY="44.0" onAction="#handleLogout" text="Logout" />
+      <Label layoutX="32.0" layoutY="37.0" prefHeight="38.0" prefWidth="118.0" text="User Dashboard">
          <font>
-            <Font size="11.0" />
-         </font></Button>
-      <Label layoutX="50.0" layoutY="213.0" text="My Projects" />
-      <Label layoutX="50.0" layoutY="431.0" text="Other Projects" />
+            <Font size="16.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
