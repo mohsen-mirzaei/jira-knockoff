@@ -111,7 +111,6 @@ public class ProjectPageController {
         taskAssignedToColumn.setOnEditCommit(event -> {
             Task task = event.getRowValue();
             task.setAssignedTo(event.getNewValue());
-            // Optionally, save the updated task to the database here
         });
 
         ObservableList<Task> tasks = FXCollections.observableArrayList(project.getTasks());
@@ -123,6 +122,7 @@ public class ProjectPageController {
         taskAssignedToComboBox.setItems(FXCollections.observableArrayList(project.getTeamMembers()));
 
         loadAllUsers();
+        loadProjectUsers();
     }
 
     @FXML
