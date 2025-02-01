@@ -43,7 +43,8 @@
                 <TableColumn fx:id="doneStatusColumn" prefWidth="75.0" text="Status" />
             </columns>
         </TableView>
-        <Button layoutX="892.0" layoutY="44.0" onAction="#handleLogout" text="Logout" />
+        <Label fx:id="currentUserLabel" layoutX="33.0" layoutY="68.0" prefHeight="17.0" prefWidth="117.0" textAlignment="CENTER" />
+        <Button layoutX="878.0" layoutY="43.0" onAction="#handleLogout" prefHeight="25.0" prefWidth="89.0" text="Logout" />
       <Label layoutX="32.0" layoutY="37.0" prefHeight="38.0" prefWidth="118.0" text="User Dashboard">
          <font>
             <Font size="16.0" />

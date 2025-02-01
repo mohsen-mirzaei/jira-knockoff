@@ -63,34 +63,19 @@ public class UserDashboardController {
     @FXML
     private TextField projectNameField;
 
+    @FXML
+    private Label currentUserLabel;
+
     private CurrentUser currentUser = CurrentUser.getInstance();
 
     public void initialize() {
+        // Set the current user's name to the label
+        currentUserLabel.setText(currentUser.getUser().getUsername());
+
         // Initialize columns
         initializeColumns(todoTitleColumn, todoPriorityColumn, todoStatusColumn);
         initializeColumns(inProgressTitleColumn, inProgressPriorityColumn, inProgressStatusColumn);
         initializeColumns(doneTitleColumn, donePriorityColumn, doneStatusColumn);
-
-        // Initialize task lists
-        ObservableList<Task> todoTasks = FXCollections.observableArrayList(
-                currentUser.getUser().getTasks().stream()
-                        .filter(task -> task.getStatus() == Task.Status.TODO)
-                        .toList()
-        );
-        ObservableList<Task> inProgressTasks = FXCollections.observableArrayList(
-                currentUser.getUser().getTasks().stream()
-                        .filter(task -> task.getStatus() == Task.Status.IN_PROGRESS)
-                        .toList()
-        );
-        ObservableList<Task> doneTasks = FXCollections.observableArrayList(
-                currentUser.getUser().getTasks().stream()
-                        .filter(task -> task.getStatus() == Task.Status.DONE)
-                        .toList()
-        );
-
-        todoTableView.setItems(todoTasks);
-        inProgressTableView.setItems(inProgressTasks);
-        doneTableView.setItems(doneTasks);
 
         // Initialize project list view
         ObservableList<Project> managerProjects = FXCollections.observableArrayList(currentUser.getUser().getManagerProjects());
@@ -100,14 +85,56 @@ public class UserDashboardController {
         ObservableList<Project> teamProjects = FXCollections.observableArrayList(currentUser.getUser().getTeamMemberProjects());
         teamProjectsListView.setItems(teamProjects);
 
+        // Set single-click event handlers
         projectListView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 1) {
+                Project selectedProject = projectListView.getSelectionModel().getSelectedItem();
+                if (selectedProject != null) {
+                    filterTasksByProject(selectedProject);
+                }
+            } else if (event.getClickCount() == 2) {
                 Project selectedProject = projectListView.getSelectionModel().getSelectedItem();
                 if (selectedProject != null) {
                     loadProjectPage(selectedProject);
                 }
             }
         });
+
+        teamProjectsListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                Project selectedProject = teamProjectsListView.getSelectionModel().getSelectedItem();
+                if (selectedProject != null) {
+                    filterTasksByProject(selectedProject);
+                }
+            } else if (event.getClickCount() == 2) {
+                Project selectedProject = projectListView.getSelectionModel().getSelectedItem();
+                if (selectedProject != null) {
+                    loadProjectPage(selectedProject);
+                }
+            }
+        });
+    }
+
+    private void filterTasksByProject(Project project) {
+        ObservableList<Task> todoTasks = FXCollections.observableArrayList(
+                project.getTasks().stream()
+                        .filter(task -> task.getStatus() == Task.Status.TODO && task.getAssignedTo().equals(currentUser.getUser()))
+                        .toList()
+        );
+        ObservableList<Task> inProgressTasks = FXCollections.observableArrayList(
+                project.getTasks().stream()
+                        .filter(task -> task.getStatus() == Task.Status.IN_PROGRESS && task.getAssignedTo().equals(currentUser.getUser()))
+                        .toList()
+        );
+        ObservableList<Task> doneTasks = FXCollections.observableArrayList(
+                project.getTasks().stream()
+                        .filter(task -> task.getStatus() == Task.Status.DONE && task.getAssignedTo().equals(currentUser.getUser()))
+                        .toList()
+        );
+
+        todoTableView.setItems(todoTasks);
+        inProgressTableView.setItems(inProgressTasks);
+        doneTableView.setItems(doneTasks);
     }
 
     private void loadProjectPage(Project project) {
@@ -194,7 +221,6 @@ public class UserDashboardController {
 
     @FXML
     private void handleLogout() {
-        // Set the current user to null
         currentUser.setUser(null);
 
         // Load the login page
@@ -209,6 +235,4 @@ public class UserDashboardController {
             e.printStackTrace();
         }
     }
-
-
 }

@@ -60,7 +60,7 @@ public class ProjectPageController {
     }
 
     private void loadProjectUsers() {
-        ObservableList<User> projectUsers = FXCollections.observableArrayList(DB.getInstance().getAllUsers());
+        ObservableList<User> projectUsers = FXCollections.observableArrayList(project.getTeamMembers());
         projectUsersListView.setItems(projectUsers);
     }
 
@@ -76,7 +76,10 @@ public class ProjectPageController {
         if (selectedUser != null && !project.getTeamMembers().contains(selectedUser)) {
             project.addTeamMember(selectedUser);
             projectUsersListView.getItems().add(selectedUser);
+            selectedUser.addTeamMemberProject(project);
         }
+        taskAssignedToComboBox.setItems(FXCollections.observableArrayList(project.getTeamMembers()));
+
     }
 
     public void initialize() {
@@ -117,7 +120,9 @@ public class ProjectPageController {
 
         taskPriorityComboBox.setItems(FXCollections.observableArrayList(Task.Priority.values()));
         taskStatusComboBox.setItems(FXCollections.observableArrayList(Task.Status.values()));
-        taskAssignedToComboBox.setItems(FXCollections.observableArrayList(DB.getInstance().getAllUsers()));
+        taskAssignedToComboBox.setItems(FXCollections.observableArrayList(project.getTeamMembers()));
+
+        loadAllUsers();
     }
 
     @FXML
